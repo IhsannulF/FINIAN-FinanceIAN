@@ -1,7 +1,7 @@
 # Product Requirement Document (PRD)
 
-# Brigida Finance
-**Version:** 2.0 (Hackathon 24 Jam)
+# FINIAN
+**Version:** 2.0 
 
 **Status:** Final — Ready for Development
 
@@ -28,7 +28,7 @@ As a result, users often:
 - Fail to save consistently
 - Have no visibility into their spending habits
 
-Brigida Finance is a lightweight personal finance tracker that combines simple budgeting with AI-generated financial insights, helping users understand their spending habits without manual analysis.
+FINIAN is a lightweight personal finance tracker that combines simple budgeting with AI-generated financial insights, helping users understand their spending habits without manual analysis.
 
 ---
 
@@ -88,7 +88,7 @@ Pain Points
 
 # 7. Value Proposition
 
-Brigida Finance helps users track income and expenses in one place, and turns raw transaction data into a plain-language AI insight — no manual analysis needed.
+FINIAN helps users track income and expenses in one place, and turns raw transaction data into a plain-language AI insight — no manual analysis needed.
 
 ---
 
@@ -323,7 +323,7 @@ Add Income   Add Expense
 
 # 17. Success Definition
 
-For this hackathon, Brigida Finance is considered successful when:
+For this hackathon, FINIAN is considered successful when:
 
 - The app is deployed and publicly accessible via URL
 - A user can register, log in, and record income/expense
@@ -343,4 +343,4 @@ For this hackathon, Brigida Finance is considered successful when:
 
 # 19. Conclusion
 
-Brigida Finance (v2.0) is a scoped-down, hackathon-ready MVP that keeps the core value proposition of v1.0 — simple budgeting and expense tracking — while adding a genuine LLM-powered financial insight feature. The scope has been deliberately reduced to what is achievable in 24 hours, prioritizing a fully working, deployed, AI-integrated product over a longer but incomplete feature list.
+FINIAN (v2.0) is a scoped-down, hackathon-ready MVP that keeps the core value proposition of v1.0 — simple budgeting and expense tracking — while adding a genuine LLM-powered financial insight feature. The scope has been deliberately reduced to what is achievable in 24 hours, prioritizing a fully working, deployed, AI-integrated product over a longer but incomplete feature list.

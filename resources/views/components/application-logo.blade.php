@@ -1,0 +1,1 @@
+<img src="{{ asset('images/logofinian.png') }}" alt="Brigida Finance" {{ $attributes }}>
