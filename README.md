@@ -103,4 +103,7 @@ npm run dev
 Buka browser dan kunjungi: [http://localhost:8000](http://localhost:8000)
 
 ---
+## 🌍 Live Demo
 
+Aplikasi FINIAN dapat diakses secara publik melalui tautan berikut:
+**https://finian-financeian-production.up.railway.app/**
