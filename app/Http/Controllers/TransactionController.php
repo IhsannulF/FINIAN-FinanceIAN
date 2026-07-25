@@ -9,22 +9,17 @@ use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
-    /**
-     * FR-08, FR-09: Tampilkan daftar transaksi milik user yang login,
-     * dengan filter opsional by type (income/expense).
-     */
-    public function index(Request $request)
-    {
-        $query = Transaction::with('category')
-            ->where('user_id', Auth::id())
-            ->orderByDesc('transaction_date')
-            ->orderByDesc('created_at');
+        public function index(Request $request)
+        {
+            $transactions = Transaction::with('category')
+        ->where('user_id', Auth::id())
+        ->when(request('type'), function ($query) {
+            return $query->where('type', request('type'));
+        })
+        ->latest()
+        ->paginate(5) 
+        ->withQueryString();
 
-        if ($request->filled('type') && in_array($request->type, ['income', 'expense'])) {
-            $query->where('type', $request->type);
-        }
-
-        $transactions = $query->paginate(10)->withQueryString();
         $categories = Category::orderBy('name')->get();
 
         return view('transactions', compact('transactions', 'categories'));
