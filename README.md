@@ -1,58 +1,106 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 💸 FINIAN - Intelligent Personal Finance Tracker
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+FINIAN adalah aplikasi manajemen keuangan pribadi berbasis web yang dirancang untuk membantu mahasiswa dan pekerja muda mencatat pengeluaran, mengatur anggaran bulanan, dan memahami kebiasaan finansial mereka melalui ringkasan otomatis berteknologi AI.
 
-## About Laravel
+Proyek ini dibangun dalam waktu **24 Jam** untuk memenuhi kualifikasi tahap Hackathon **IndonesiaNEXT Telkomsel** (Kategori Tema: Literasi Finansial).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Latar Belakang & Solusi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Banyak anak muda kesulitan mengelola keuangan karena tidak memiliki sistem pencatatan yang terstruktur. Akibatnya, pengeluaran menjadi tidak terkendali dan mereka tidak memahami pola konsumsi mereka sendiri.
 
-## Learning Laravel
+**FINIAN** hadir sebagai solusi ringan (*lightweight*) yang tidak hanya mencatat uang masuk dan keluar, tetapi juga memproses data mentah tersebut menggunakan **LLM API (Generative AI)** untuk memberikan *insight* dan saran keuangan dalam bahasa yang mudah dipahami (tanpa perlu analisis manual).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🛠 Tech Stack
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+| Kategori | Teknologi |
+|---|---|
+| Framework | Laravel 13 |
+| Frontend | Blade Template, Tailwind CSS |
+| Database | Supabase (PostgreSQL) |
+| AI Integration | Google Gemini API (`gemini-3.5-flash`) |
+| Icons | Phosphor Icons |
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## ✨ Fitur Utama (MVP)
+
+- **Autentikasi Aman** — Sistem login, registrasi, dan proteksi *route* untuk menjaga privasi data finansial pengguna.
+- **Dashboard Interaktif** — Ringkasan sisa saldo, pemasukan, pengeluaran, dan persentase penggunaan *budget* bulan ini secara *real-time*.
+- **Manajemen Transaksi (CRUD)** — Tambah, edit, dan hapus data pemasukan atau pengeluaran harian dengan mudah.
+- **Monitoring Pengeluaran** — Pelacakan pengeluaran yang dikelompokkan berdasarkan kategori (Makanan, Transportasi, Belanja, dll).
+- **FINIAN AI Insight** *(Fitur Unggulan)* — Mengirimkan agregasi data bulanan (bukan data mentah) ke LLM API untuk menghasilkan 1–2 kalimat saran keuangan yang dipersonalisasi. Fitur ini dirancang dengan sistem *caching* (disimpan di database) untuk menghemat pemanggilan API dan mencegah *latency* pada dashboard.
+
+---
+
+## ⚙️ Panduan Instalasi Lokal
+
+Ikuti langkah-langkah di bawah ini untuk menjalankan FINIAN di mesin lokal Anda.
+
+### 1. Clone Repositori
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/username-kamu/finian.git
+cd finian
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Install Dependensi PHP & Node.js
 
-## Contributing
+```bash
+composer install
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Konfigurasi Environment
 
-## Code of Conduct
+Salin file konfigurasi bawaan dan sesuaikan nilainya:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+cp .env.example .env
+```
 
-## Security Vulnerabilities
+Buka file `.env` dan pastikan Anda mengisi kredensial database (Supabase) dan kunci API Gemini:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```env
+DB_CONNECTION=pgsql
+DB_HOST=aws-0-region.pooler.supabase.com
+DB_PORT=6543
+DB_DATABASE=postgres
+DB_USERNAME=postgres.project_id
+DB_PASSWORD=your_supabase_password
 
-## License
+GEMINI_API_KEY=your_gemini_api_key
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 4. Generate Application Key & Migrasi Database
+
+```bash
+php artisan key:generate
+php artisan migrate:fresh --seed
+```
+
+> **Catatan:** Flag `--seed` digunakan untuk mengisi kategori default pada tabel `categories`.
+
+### 5. Jalankan Development Server
+
+Buka dua terminal terpisah dan jalankan perintah berikut:
+
+```bash
+# Terminal 1 — Menjalankan server Laravel
+php artisan serve
+```
+
+```bash
+# Terminal 2 — Menjalankan Vite asset bundler
+npm run dev
+```
+
+### 6. Akses Aplikasi
+
+Buka browser dan kunjungi: [http://localhost:8000](http://localhost:8000)
+
+---
+
