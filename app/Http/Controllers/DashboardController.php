@@ -6,30 +6,35 @@ use App\Models\Transaction;
 use App\Models\AiInsight;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 
 class DashboardController extends Controller
 {
     public function index()
     {
+
         $userId = Auth::id();
         
         // Kita kunci ke bulan & tahun saat ini
         $currentMonth = now()->month;
         $currentYear = now()->year;
 
-        // 1. Ambil semua transaksi milik user yang login pada bulan ini
-        $transactions = Transaction::where('user_id', $userId)
+        // 1. Ambil total income, expense, dan balance bulan ini
+        $summary = Transaction::where('user_id', $userId)
             ->whereMonth('transaction_date', $currentMonth)
             ->whereYear('transaction_date', $currentYear)
-            ->get();
+            ->selectRaw("
+                COALESCE(SUM(CASE WHEN type = 'income' THEN amount END), 0) as income,
+                COALESCE(SUM(CASE WHEN type = 'expense' THEN amount END), 0) as expense
+            ")
+            ->first();
 
-        // 2. Hitung Pemasukan, Pengeluaran & Saldo Aktif
-        $income = $transactions->where('type', 'income')->sum('amount');
-        $expense = $transactions->where('type', 'expense')->sum('amount');
+        $income = $summary->income;
+        $expense = $summary->expense;
         $balance = $income - $expense;
 
-        // 3. Ambil total Budget bulan ini
+        // 2. Ambil total Budget bulan ini
         $budget = Budget::where('user_id', $userId)
             ->where('month', $currentMonth)
             ->where('year', $currentYear)
@@ -38,13 +43,13 @@ class DashboardController extends Controller
         $totalBudget = $budget ? $budget->total_budget : 0;
         $budgetRemaining = $totalBudget - $expense;
         
-        // 4. Hitung Persentase Pemakaian Budget (maksimal 100%)
+        // 3. Hitung Persentase Pemakaian Budget (maksimal 100%)
         $budgetPercentage = 0;
         if ($totalBudget > 0) {
             $budgetPercentage = min(100, round(($expense / $totalBudget) * 100));
         }
 
-        // 5. Kelompokkan Pengeluaran Berdasarkan Kategori untuk Monitoring UI
+        // 4. Kelompokkan Pengeluaran Berdasarkan Kategori untuk Monitoring UI
         $expensesByCategory = Transaction::with('category')
             ->where('user_id', $userId)
             ->where('type', 'expense')
@@ -55,7 +60,7 @@ class DashboardController extends Controller
             ->orderByDesc('total_amount')
             ->get();
 
-        // 6. Ambil Insight dari AI
+        // 5. Ambil Insight dari AI
         $aiInsight = AiInsight::where('user_id', $userId)
             ->where('month', $currentMonth)
             ->where('year', $currentYear)
@@ -64,7 +69,82 @@ class DashboardController extends Controller
         return view('dashboard', compact(
             'income', 'expense', 'balance', 
             'totalBudget', 'budgetRemaining', 'budgetPercentage', 
-            'expensesByCategory','expensesByCategory', 'aiInsight'
+            'expensesByCategory', 'aiInsight'
         ));
     }
+
+    public function generateInsight(Request $request)
+    {
+        $userId = Auth::id();
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+
+        // 1. Kumpulkan Data Keuangan Bulan Ini
+        $transactions = Transaction::with('category')
+            ->where('user_id', $userId)
+            ->whereMonth('transaction_date', $currentMonth)
+            ->whereYear('transaction_date', $currentYear)
+            ->get();
+
+        $income = $transactions->where('type', 'income')->sum('amount');
+        $expense = $transactions->where('type', 'expense')->sum('amount');
+        
+        $budget = Budget::where('user_id', $userId)
+            ->where('month', $currentMonth)
+            ->where('year', $currentYear)
+            ->first();
+        $totalBudget = $budget ? $budget->total_budget : 0;
+
+        // Cari kategori pengeluaran terbesar
+        $topCategory = $transactions->where('type', 'expense')
+            ->groupBy('category.name')
+            ->map(function ($row) {
+                return $row->sum('amount');
+            })
+            ->sortDesc()
+            ->keys()
+            ->first() ?? 'Belum ada';
+
+        // 2. Susun Prompt untuk AI
+        $prompt = "Kamu adalah FINIAN, asisten keuangan cerdas. Berikan 1-2 kalimat (maksimal 30 kata) masukan keuangan langsung ke intinya untuk pengguna. 
+        Konteks bulan ini: Pemasukan Rp" . number_format($income, 0, ',', '.') . 
+        ", Pengeluaran Rp" . number_format($expense, 0, ',', '.') . 
+        ", Batas Budget Rp" . number_format($totalBudget, 0, ',', '.') . 
+        ". Pengeluaran terbesar di kategori: " . $topCategory . ". 
+        Gunakan gaya bahasa santai tapi profesional, jangan gunakan poin-poin.";
+
+        // 3. Panggil API Gemini (Gunakan gemini-3.5-flash yang didukung untuk Free Tier)
+        $apiKey = trim(env('GEMINI_API_KEY'));
+        
+        $response = Http::withoutVerifying()->withHeaders([
+            'Content-Type' => 'application/json',
+            'x-goog-api-key' => $apiKey
+        ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent", [
+            'contents' => [
+                ['parts' => [['text' => $prompt]]]
+            ]
+        ]);
+
+        // 4. Cek Jika Sukses
+        if ($response->successful()) {
+            $insightText = $response->json('candidates.0.content.parts.0.text');
+            $insightText = trim($insightText, "\" \t\n\r\0\x0B");
+
+            // Simpan ke Database
+            AiInsight::updateOrCreate(
+                [
+                    'user_id' => $userId, 
+                    'month' => $currentMonth, 
+                    'year' => $currentYear
+                ],
+                ['content' => $insightText]
+            );
+
+            return redirect()->route('dashboard')->with('success', 'Analisa AI berhasil diperbarui!');
+        } else {
+            // MUNCULKAN ERROR JIKA API GAGAL
+            dd('API GEMINI GAGAL:', $response->status(), $response->json());
+        }
+    }
+    
 }

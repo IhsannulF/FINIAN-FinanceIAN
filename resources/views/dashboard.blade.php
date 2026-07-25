@@ -17,6 +17,22 @@
     @include('partials.navbar')
     <!-- Main Content -->
     <main class="max-w-6xl mx-auto px-6 py-10">
+
+        <!-- Tempat Menampilkan Pesan Error / Sukses -->
+            @if(session('error'))
+                <div class="mb-6 p-4 rounded-[12px] bg-semantic-red/10 border border-semantic-red text-semantic-red font-medium flex items-center gap-2">
+                    <i class="ph ph-warning-circle text-xl"></i>
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            @if(session('success'))
+                <div class="mb-6 p-4 rounded-[12px] bg-semantic-greentext/10 border border-semantic-greentext text-semantic-greentext font-medium flex items-center gap-2">
+                    <i class="ph ph-check-circle text-xl"></i>
+                    {{ session('success') }}
+                </div>
+            @endif
+        <!-- Berakhir Tempat Pesan -->
         
         <h1 class="font-display font-bold text-[36px] tracking-[-0.5px] mb-8">Dashboard</h1>
 
@@ -123,10 +139,13 @@
                         @endif
                     </p>
 
-                    <!-- Form ini siap dihubungkan dengan route POST untuk trigger LLM API -->
-                    <form action="#" method="POST" class="mt-6">
+                    <!-- Form ini terhubung dengan route POST untuk trigger LLM API -->
+                    <form action="{{ route('dashboard.insight') }}" method="POST" class="mt-6" 
+                        onsubmit="let btn = document.getElementById('ai-submit-btn'); btn.disabled = true; btn.innerHTML = `<i class='ph ph-spinner animate-spin text-lg mr-2'></i> Menganalisa...`;">
                         @csrf
-                        <button type="submit" class="w-full bg-white text-brand rounded-[10px] py-[10px] text-sm font-semibold shadow-micro hover:bg-neutral-50 transition border border-[#d6c7ff]">
+                        
+                        <button id="ai-submit-btn" type="submit" 
+                            class="w-full flex items-center justify-center bg-white text-brand rounded-[10px] py-[10px] text-sm font-semibold shadow-micro hover:bg-neutral-50 transition border border-[#d6c7ff] disabled:opacity-50">
                             {{ (isset($aiInsight) && $aiInsight) ? 'Perbarui Analisa' : 'Buat Analisa AI' }}
                         </button>
                     </form>

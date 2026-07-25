@@ -14,25 +14,46 @@
 </head>
 <body class="bg-white text-[#101114] antialiased">
 
-    <header class="border-b border-[#dedee5]">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <img src="{{ asset('images/logofinian.png') }}" alt="FINIAN" class="h-8 w-auto">
-                <span class="font-display font-bold text-lg">FINIAN</span>
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-[#dedee5]">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <img src="{{ asset('images/logofinian.png') }}" alt="FINIAN" class="h-8 w-auto">
+            <span class="font-display font-bold text-lg">FINIAN</span>
+        </div>
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-[#686b82]">
+            <a href="#fitur" class="hover:text-[#101114]">Fitur</a>
+            <a href="#insight" class="hover:text-[#101114]">AI Insight</a>
+            <a href="#cara-kerja" class="hover:text-[#101114]">Cara kerja</a>
+        </nav>
+
+        @auth
+            <div class="flex items-center gap-3">
+                @php
+                    $userName = Auth::user()->name ?? 'User';
+                    $nameParts = explode(' ', $userName);
+                    $initials = count($nameParts) > 1
+                        ? strtoupper(substr($nameParts[0], 0, 1) . substr($nameParts[1], 0, 1))
+                        : strtoupper(substr($userName, 0, 2));
+                @endphp
+                <div class="w-8 h-8 rounded-full bg-[rgba(133,91,251,0.16)] text-[#7132f5] flex items-center justify-center font-bold text-sm">
+                    {{ $initials }}
+                </div>
+                <span class="hidden sm:inline text-sm font-medium text-[#101114]">{{ $userName }}</span>
+                <a href="{{ route('dashboard') }}"
+                   class="inline-flex items-center rounded-[12px] bg-[#7132f5] px-4 py-[13px] text-sm font-semibold text-white hover:bg-[#5741d8] transition">
+                    Ke Dashboard
+                </a>
             </div>
-            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-[#686b82]">
-                <a href="#fitur" class="hover:text-[#101114]">Fitur</a>
-                <a href="#cara-kerja" class="hover:text-[#101114]">Cara kerja</a>
-                <a href="#insight" class="hover:text-[#101114]">AI Insight</a>
-            </nav>
+        @else
             <div class="flex items-center gap-3">
                 <a href="{{ route('login') }}" class="text-sm font-medium text-[#101114] hover:text-[#7132f5]">Masuk</a>
                 <a href="{{ route('register') }}" class="inline-flex items-center rounded-[12px] bg-[#7132f5] px-4 py-[13px] text-sm font-semibold text-white hover:bg-[#5741d8] transition">
                     Daftar gratis
                 </a>
             </div>
-        </div>
-    </header>
+        @endauth
+    </div>
+</header>
 
     <section class="max-w-6xl mx-auto px-6 pt-16 pb-20 grid md:grid-cols-2 gap-12 items-center">
         <div>
@@ -46,9 +67,15 @@
                 Catat transaksi, atur budget bulanan, dan biarkan AI menjelaskan ke mana uangmu pergi — tanpa perlu buka spreadsheet.
             </p>
             <div class="flex items-center gap-4">
-                <a href="{{ route('register') }}" class="inline-flex items-center rounded-[12px] bg-[#7132f5] px-4 py-[13px] text-base font-semibold text-white hover:bg-[#5741d8] transition">
-                    Mulai gratis
-                </a>
+                @auth
+                    <a href="{{ route('dashboard') }}" class="inline-flex items-center rounded-[12px] bg-[#7132f5] px-4 py-[13px] text-base font-semibold text-white hover:bg-[#5741d8] transition">
+                        Ke Dashboard
+                    </a>
+                @else
+                    <a href="{{ route('register') }}" class="inline-flex items-center rounded-[12px] bg-[#7132f5] px-4 py-[13px] text-base font-semibold text-white hover:bg-[#5741d8] transition">
+                        Mulai gratis
+                    </a>
+                @endauth
                 <a href="#fitur" class="inline-flex items-center rounded-[12px] border border-[#5741d8] px-4 py-[13px] text-base font-medium text-[#5741d8] hover:bg-[rgba(133,91,251,0.08)] transition">
                     Lihat fitur
                 </a>
@@ -91,7 +118,7 @@
         <h2 class="font-display font-bold text-[36px] leading-[1.22] tracking-[-0.5px] mb-3">Semua yang kamu butuh, satu tempat</h2>
         <p class="text-[#686b82] mb-12 max-w-xl">Gak perlu spreadsheet ribet. FINIAN nyatetin, ngitung, dan ngejelasin — kamu tinggal lihat.</p>
 
-        <div class="grid md:grid-cols-2 gap-5">
+        <div class="grid md:grid-cols-3 gap-5">
             <div class="rounded-[16px] border border-[#dedee5] p-6">
                 <div class="w-10 h-10 rounded-[10px] bg-[rgba(133,91,251,0.16)] flex items-center justify-center mb-4">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7132f5" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
@@ -115,13 +142,51 @@
                 <h3 class="font-semibold text-[18px] mb-2">Pantau per kategori</h3>
                 <p class="text-sm text-[#686b82] leading-[1.38]">Lihat kategori mana yang paling banyak makan budget kamu bulan ini.</p>
             </div>
+        </div>
+    </section>
 
-            <div id="insight" class="rounded-[16px] bg-[#101114] p-6 text-white">
-                <div class="w-10 h-10 rounded-[10px] bg-[rgba(133,91,251,0.24)] flex items-center justify-center mb-4">
+    <section id="insight" class="bg-[#101114] text-white">
+        <div class="max-w-6xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="w-10 h-10 rounded-[10px] bg-[rgba(133,91,251,0.24)] flex items-center justify-center mb-5">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#AFA9EC" stroke-width="2"><path d="M12 2l2.4 7.2H22l-6 4.4 2.3 7.2L12 16.4 5.7 20.8 8 13.6 2 9.2h7.6z"/></svg>
                 </div>
-                <h3 class="font-semibold text-[18px] mb-2">AI Financial Insight</h3>
-                <p class="text-sm text-[#9497a9] leading-[1.38]">Setiap bulan, AI FINIAN membaca pola transaksimu dan kasih satu insight singkat yang gampang dipahami — bukan grafik yang bikin pusing.</p>
+                <h2 class="font-display font-bold text-[36px] leading-[1.22] tracking-[-0.5px] mb-4">
+                    AI yang benar-benar ngerti kebiasaan belanjamu
+                </h2>
+                <p class="text-[#9497a9] leading-[1.38] mb-6 max-w-md">
+                    Setiap bulan, FINIAN membaca pola transaksimu — kategori mana yang paling boros, apakah kamu on-track sama budget, dan kasih satu tips singkat yang gampang dipahami. Bukan grafik ribet, cukup dua-tiga kalimat.
+                </p>
+                <ul class="space-y-3 text-sm text-[#9497a9]">
+                    <li class="flex items-start gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7132f5" stroke-width="2" class="mt-0.5 shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
+                        Highlight kategori pengeluaran terbesar bulan ini
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7132f5" stroke-width="2" class="mt-0.5 shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
+                        Kasih tahu apakah kamu masih aman dari budget
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7132f5" stroke-width="2" class="mt-0.5 shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
+                        Satu tips actionable yang bisa langsung dipraktekkan
+                    </li>
+                </ul>
+            </div>
+
+            <div class="rounded-[16px] bg-[#1a1b20] border border-[rgba(255,255,255,0.08)] p-6">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-8 h-8 rounded-[8px] bg-[#7132f5] flex items-center justify-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2l2.4 7.2H22l-6 4.4 2.3 7.2L12 16.4 5.7 20.8 8 13.6 2 9.2h7.6z"/></svg>
+                    </div>
+                    <p class="text-sm font-semibold">FINIAN AI Insight</p>
+                </div>
+                <p class="text-base leading-[1.38] text-white">
+                    &ldquo;Pengeluaran Makanan kamu 40% dari total budget bulan ini — sedikit lebih tinggi dari biasanya. Coba kurangi jajan luar 2x minggu ini.&rdquo;
+                </p>
+                <div class="mt-5 pt-5 border-t border-[rgba(255,255,255,0.08)] flex items-center justify-between text-xs text-[#9497a9]">
+                    <span>Diperbarui otomatis tiap bulan</span>
+                    <span class="text-[#AFA9EC] font-medium">Live dari transaksimu</span>
+                </div>
             </div>
         </div>
     </section>
@@ -152,9 +217,15 @@
     <section class="max-w-6xl mx-auto px-6 py-20 text-center">
         <h2 class="font-display font-bold text-[36px] leading-[1.22] tracking-[-0.5px] mb-4">Mulai kelola uangmu hari ini</h2>
         <p class="text-[#686b82] mb-8 max-w-md mx-auto">Gratis, gak perlu kartu kredit. Daftar dan catat transaksi pertamamu dalam satu menit.</p>
-        <a href="{{ route('register') }}" class="inline-flex items-center rounded-[12px] bg-[#7132f5] px-6 py-[13px] text-base font-semibold text-white hover:bg-[#5741d8] transition">
+        @auth
+    <a href="{{ route('dashboard') }}" class="inline-flex items-center rounded-[12px] bg-[#7132f5] px-4 py-[13px] text-base font-semibold text-white hover:bg-[#5741d8] transition">
+        Ke Dashboard
+        </a>
+    @else
+        <a href="{{ route('register') }}" class="inline-flex items-center rounded-[12px] bg-[#7132f5] px-4 py-[13px] text-base font-semibold text-white hover:bg-[#5741d8] transition">
             Daftar gratis
         </a>
+    @endauth
     </section>
 
     <footer class="border-t border-[#dedee5]">
@@ -163,7 +234,7 @@
                 <img src="{{ asset('images/logofinian.png') }}" alt="FINIAN" class="h-6 w-auto">
                 <span class="font-display font-bold text-sm">FINIAN</span>
             </div>
-            <p class="text-xs text-[#9497a9]">Dibuat untuk IndonesiaNEXT Hackathon 2026</p>
+            <p class="text-xs text-[#9497a9]">10th IndonesiaNEXT</p>
         </div>
     </footer>
 

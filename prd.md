@@ -1,7 +1,7 @@
 # Product Requirement Document (PRD)
 
 # FINIAN
-**Version:** 2.0 
+**Version:** 1.0 
 
 **Status:** Final — Ready for Development
 
@@ -343,4 +343,4 @@ For this hackathon, FINIAN is considered successful when:
 
 # 19. Conclusion
 
-FINIAN (v2.0) is a scoped-down, hackathon-ready MVP that keeps the core value proposition of v1.0 — simple budgeting and expense tracking — while adding a genuine LLM-powered financial insight feature. The scope has been deliberately reduced to what is achievable in 24 hours, prioritizing a fully working, deployed, AI-integrated product over a longer but incomplete feature list.
+FINIAN (v1.0) is a scoped-down, hackathon-ready MVP that keeps the core value proposition of v1.0 — simple budgeting and expense tracking — while adding a genuine LLM-powered financial insight feature. The scope has been deliberately reduced to what is achievable in 24 hours, prioritizing a fully working, deployed, AI-integrated product over a longer but incomplete feature list.
