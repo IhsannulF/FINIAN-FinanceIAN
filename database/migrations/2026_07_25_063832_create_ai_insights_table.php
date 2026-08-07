@@ -6,13 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('ai_insights', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->unsignedTinyInteger('month');
-            $table->unsignedSmallInteger('year');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->smallInteger('month');
+            $table->smallInteger('year');
             $table->text('content');
             $table->timestamps();
 
@@ -20,6 +23,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('ai_insights');
